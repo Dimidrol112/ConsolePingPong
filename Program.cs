@@ -37,6 +37,7 @@ namespace ConsolePingPong
                 text = gameSpeed.ToString();
             }
             Console.SetBufferSize(screenWidth, screenHeight);
+            Console.SetWindowSize(screenWidth, screenHeight);
             Console.BackgroundColor = ConsoleColor.Black;
             Console.WriteLine("FirstPlayer(w/up,s/down) SecondPlayer(o/up,l/down).Press any key to start \n " + Console.LargestWindowHeight + "-" + Console.LargestWindowWidth);
             Console.ReadKey(true);
@@ -181,7 +182,7 @@ namespace ConsolePingPong
                     Paint.Line(Program.screenWidth - 1, Player2.y, ConsoleColor.Black);
                     if (KI.KeyChar.ToString() == "o" && y > 0)
                         y--;
-                    if (KI.KeyChar.ToString() == "l" && y < Program.screenHeight - Program.playerLength-1)
+                    if (KI.KeyChar.ToString() == "l" && y < Program.screenHeight - Program.playerLength - 1)
                         y++;
                     Paint.Line(Program.screenWidth - 1, Player2.y, ConsoleColor.Red);
                 }
