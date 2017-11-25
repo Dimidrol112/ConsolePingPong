@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace ConsolePingPong
 {
@@ -55,13 +56,33 @@ namespace ConsolePingPong
 
     static class Paint
     {
-        public static void SetPixel(int x, int y, ConsoleColor col)
+        static List<Operation> queue = new List<Operation>();
+        static bool busy;
+        public static void SetPixel(int _x, int _y, ConsoleColor col)
         {
-            if (x >= 0 && y >= 0 && x < Program.screenWidth && y < Program.screenHeight)
+            if (busy)
             {
-                Console.SetCursorPosition(x, y);
-                Console.BackgroundColor = col;
-                Console.Write(" ");
+                queue.Add(new Operation { x = _x, y = _y, color = col });
+            }
+            else
+            {
+                busy = true;
+                if (_x >= 0 && _y >= 0 && _x < Program.screenWidth && _y < Program.screenHeight)
+                {
+                    var oldColor = Console.BackgroundColor;
+                    Console.SetCursorPosition(_x, _y);
+                    Console.BackgroundColor = col;
+                    Console.Write(" ");
+                    Console.BackgroundColor = oldColor;
+                }
+                busy = false;
+                if (queue.Count != 0)
+                {
+                    var op = queue[queue.Count - 1];
+                    queue.RemoveAt(queue.Count - 1);
+                    SetPixel(op.x, op.y, op.color);
+
+                }
             }
         }
 
@@ -70,6 +91,20 @@ namespace ConsolePingPong
             for (int i = 0; i < Program.playerLength; i++)
                 SetPixel(x, i + y, ConsoleColor.Red);
         }
+
+        public static void Line(int x, int y, ConsoleColor color)
+        {
+            for (int i = 0; i < Program.playerLength; i++)
+                SetPixel(x, i + y, color);
+        }
+
+        class Operation
+        {
+            public int x;
+            public int y;
+            public ConsoleColor color;
+        }
+
     }
 
     static class World
